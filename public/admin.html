@@ -17,10 +17,10 @@
     <h1>Panel de la carnicería</h1>
     <p>Ingresá tu usuario y clave para editar precios y cortes.</p>
     <label for="username">Usuario</label>
-    <input id="username" type="text" autocomplete="username" required>
+    <input id="username" name="username" type="text" autocomplete="username" required>
     <label for="password">Clave</label>
-    <input id="password" type="password" autocomplete="current-password" required>
-    <button type="submit" class="whatsapp-btn dark">Ingresar</button>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button type="button" id="loginBtn" class="whatsapp-btn dark">Ingresar</button>
     <p id="loginError" class="login-error" hidden>Usuario o clave incorrectos.</p>
     <a href="/" class="back-link">← Volver al catálogo</a>
   </form>
