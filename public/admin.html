@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · La Carnicería</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500;600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+<div id="loginScreen" class="login-screen">
+  <form id="loginForm" class="login-card">
+    <span class="brand-mark large">🥩</span>
+    <h1>Panel de la carnicería</h1>
+    <p>Ingresá tu usuario y clave para editar precios y cortes.</p>
+    <label for="username">Usuario</label>
+    <input id="username" type="text" autocomplete="username" required>
+    <label for="password">Clave</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button type="submit" class="whatsapp-btn dark">Ingresar</button>
+    <p id="loginError" class="login-error" hidden>Usuario o clave incorrectos.</p>
+    <a href="/" class="back-link">← Volver al catálogo</a>
+  </form>
+</div>
+
+<div id="adminScreen" class="admin-screen" hidden>
+  <header class="admin-header">
+    <div>
+      <h1>Editar cortes y precios</h1>
+      <p class="brand-tag">Los cambios se ven al instante para todos los clientes.</p>
+    </div>
+    <div class="admin-header-actions">
+      <a href="/" class="back-link">Ver catálogo</a>
+      <button id="logoutBtn" class="icon-btn-text">Salir</button>
+    </div>
+  </header>
+
+  <section class="admin-add">
+    <h2>Agregar un corte nuevo</h2>
+    <form id="addForm" class="product-form">
+      <div class="field">
+        <label for="newName">Nombre</label>
+        <input id="newName" type="text" required placeholder="Ej: Entraña">
+      </div>
+      <div class="field">
+        <label for="newCategory">Categoría</label>
+        <input id="newCategory" type="text" required placeholder="Ej: Vacuno" list="categoryList">
+        <datalist id="categoryList"></datalist>
+      </div>
+      <div class="field">
+        <label for="newPrice">Precio ($)</label>
+        <input id="newPrice" type="number" min="0" step="1" required placeholder="0">
+      </div>
+      <div class="field">
+        <label for="newUnit">Se vende por</label>
+        <select id="newUnit">
+          <option value="kg">Kilo (kg)</option>
+          <option value="unidad">Unidad</option>
+        </select>
+      </div>
+      <div class="field field-wide">
+        <label for="newImage">URL de la foto</label>
+        <input id="newImage" type="url" placeholder="https://...">
+      </div>
+      <div class="field field-checkbox">
+        <label><input id="newOffer" type="checkbox"> Marcar como oferta</label>
+      </div>
+      <button type="submit" class="whatsapp-btn dark">Agregar corte</button>
+    </form>
+  </section>
+
+  <section class="admin-list">
+    <h2>Cortes cargados</h2>
+    <div id="productList" class="admin-product-list"></div>
+  </section>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

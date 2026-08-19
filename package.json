@@ -1,0 +1,9 @@
+{
+  "name": "carniceria-pedidos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de pedidos por WhatsApp para carnicería, con catálogo editable.",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnicería · Pedidos por WhatsApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@500;600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">🥩</span>
+      <div class="brand-text">
+        <h1>La Carnicería</h1>
+        <p class="brand-tag">Pedí tu carne, la preparamos, la coordinás por WhatsApp</p>
+      </div>
+    </div>
+    <button id="openCartBtn" class="cart-btn" aria-label="Ver pedido">
+      <span class="cart-btn-label">Tu pedido</span>
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+  </div>
+  <nav id="categoryNav" class="category-nav" aria-label="Categorías"></nav>
+</header>
+
+<main id="catalog" class="catalog">
+  <p class="loading-msg" id="loadingMsg">Colgando los cortes en el mostrador…</p>
+</main>
+
+<footer class="site-footer">
+  <p>Los precios pueden variar según cotización. El total final se confirma por WhatsApp.</p>
+</footer>
+
+<!-- Carrito lateral -->
+<div id="cartOverlay" class="cart-overlay" hidden></div>
+<aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
+  <div class="cart-drawer-header">
+    <h2>Tu pedido</h2>
+    <button id="closeCartBtn" class="icon-btn" aria-label="Cerrar">✕</button>
+  </div>
+  <div id="cartItems" class="cart-items">
+    <p class="cart-empty">Todavía no agregaste ningún corte.</p>
+  </div>
+  <div class="cart-footer">
+    <label for="customerName">Tu nombre</label>
+    <input id="customerName" type="text" placeholder="¿A nombre de quién anotamos el pedido?">
+    <button id="sendOrderBtn" class="whatsapp-btn" disabled>
+      Enviar pedido por WhatsApp
+    </button>
+    <p class="cart-hint">Te vamos a confirmar el total y la hora de retiro por WhatsApp.</p>
+  </div>
+</aside>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
