@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-
+ 
 <header class="site-header">
   <div class="header-inner">
     <div class="brand">
@@ -26,15 +26,15 @@
   </div>
   <nav id="categoryNav" class="category-nav" aria-label="Categorías"></nav>
 </header>
-
+ 
 <main id="catalog" class="catalog">
   <p class="loading-msg" id="loadingMsg">Colgando los cortes en el mostrador…</p>
 </main>
-
+ 
 <footer class="site-footer">
   <p>Los precios pueden variar según cotización. El total final se confirma por WhatsApp.</p>
 </footer>
-
+ 
 <!-- Carrito lateral -->
 <div id="cartOverlay" class="cart-overlay" hidden></div>
 <aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
@@ -48,13 +48,16 @@
   <div class="cart-footer">
     <label for="customerName">Tu nombre</label>
     <input id="customerName" type="text" placeholder="¿A nombre de quién anotamos el pedido?">
+    <label for="customerAddress">Dirección (solo si es delivery)</label>
+    <input id="customerAddress" type="text" placeholder="Calle, número, piso/depto, referencia...">
     <button id="sendOrderBtn" class="whatsapp-btn" disabled>
       Enviar pedido por WhatsApp
     </button>
     <p class="cart-hint">Te vamos a confirmar el total y la hora de retiro por WhatsApp.</p>
   </div>
 </aside>
-
+ 
 <script src="/js/app.js"></script>
 </body>
 </html>
+ 
