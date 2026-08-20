@@ -1,7 +1,12 @@
 .admin-body {
   min-height: 100vh;
 }
-
+ 
+.login-screen[hidden],
+.admin-screen[hidden] {
+  display: none !important;
+}
+ 
 .login-screen {
   min-height: 100vh;
   display: flex;
@@ -9,7 +14,7 @@
   justify-content: center;
   padding: 20px;
 }
-
+ 
 .login-card {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -20,16 +25,16 @@
   text-align: center;
   box-shadow: 0 4px 0 var(--charcoal);
 }
-
+ 
 .login-card h1 {
   font-family: var(--font-display);
   font-size: 1.8rem;
   margin: 0 0 6px;
   letter-spacing: 0.02em;
 }
-
+ 
 .login-card p { font-size: 0.85rem; opacity: 0.7; margin: 0 0 18px; }
-
+ 
 .login-card label {
   display: block;
   text-align: left;
@@ -37,7 +42,7 @@
   font-weight: 600;
   margin: 10px 0 4px;
 }
-
+ 
 .login-card input {
   width: 100%;
   padding: 10px 12px;
@@ -46,15 +51,15 @@
   font-family: var(--font-body);
   font-size: 0.9rem;
 }
-
+ 
 .login-card .whatsapp-btn { margin-top: 16px; }
-
+ 
 .login-error {
   color: var(--maroon);
   font-size: 0.82rem;
   margin-top: 10px;
 }
-
+ 
 .back-link {
   display: inline-block;
   margin-top: 14px;
@@ -62,15 +67,15 @@
   text-decoration: none;
   opacity: 0.7;
 }
-
+ 
 .back-link:hover { opacity: 1; }
-
+ 
 .admin-screen {
   max-width: 1000px;
   margin: 0 auto;
   padding: 24px 20px 80px;
 }
-
+ 
 .admin-header {
   display: flex;
   justify-content: space-between;
@@ -81,19 +86,19 @@
   margin-bottom: 28px;
   flex-wrap: wrap;
 }
-
+ 
 .admin-header h1 {
   font-family: var(--font-display);
   font-size: 2rem;
   margin: 0;
 }
-
+ 
 .admin-header-actions {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-
+ 
 .icon-btn-text {
   background: var(--maroon);
   color: var(--paper);
@@ -105,7 +110,7 @@
   font-size: 0.82rem;
   cursor: pointer;
 }
-
+ 
 .admin-add, .admin-list {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -113,31 +118,31 @@
   padding: 20px;
   margin-bottom: 28px;
 }
-
+ 
 .admin-add h2, .admin-list h2 {
   font-family: var(--font-display);
   font-size: 1.5rem;
   margin: 0 0 16px;
   color: var(--maroon);
 }
-
+ 
 .product-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 14px;
   align-items: end;
 }
-
+ 
 .field { display: flex; flex-direction: column; gap: 4px; }
 .field-wide { grid-column: span 2; }
 .field-checkbox { flex-direction: row; align-items: center; gap: 8px; }
-
+ 
 .field label {
   font-size: 0.75rem;
   font-weight: 600;
   opacity: 0.8;
 }
-
+ 
 .field input, .field select {
   padding: 9px 10px;
   border: 1.5px solid var(--charcoal);
@@ -145,18 +150,18 @@
   font-family: var(--font-body);
   font-size: 0.88rem;
 }
-
+ 
 .product-form .whatsapp-btn {
   grid-column: 1 / -1;
   max-width: 240px;
 }
-
+ 
 .admin-product-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
+ 
 .admin-product-row {
   display: grid;
   grid-template-columns: 56px 1.4fr 1fr 0.9fr 0.9fr auto auto;
@@ -167,14 +172,14 @@
   border-radius: 8px;
   background: var(--cream);
 }
-
+ 
 .admin-product-row img {
   width: 56px;
   height: 56px;
   object-fit: cover;
   border-radius: 6px;
 }
-
+ 
 .admin-product-row input, .admin-product-row select {
   padding: 7px 8px;
   border: 1.5px solid var(--charcoal);
@@ -183,12 +188,12 @@
   font-size: 0.83rem;
   width: 100%;
 }
-
+ 
 .row-actions {
   display: flex;
   gap: 6px;
 }
-
+ 
 .row-save {
   background: var(--green);
   color: var(--paper);
@@ -199,7 +204,7 @@
   font-size: 0.78rem;
   cursor: pointer;
 }
-
+ 
 .row-delete {
   background: var(--maroon);
   color: var(--paper);
@@ -210,15 +215,15 @@
   font-size: 0.78rem;
   cursor: pointer;
 }
-
+ 
 .row-active-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; }
-
+ 
 .save-flash {
   font-size: 0.7rem;
   color: var(--green);
   font-family: var(--font-mono);
 }
-
+ 
 @media (max-width: 800px) {
   .admin-product-row {
     grid-template-columns: 1fr 1fr;
