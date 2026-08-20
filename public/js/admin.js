@@ -1,12 +1,12 @@
 (function () {
   "use strict";
- 
+
   const PRODUCTS_ENDPOINT = "/.netlify/functions/products";
   const LOGIN_ENDPOINT = "/.netlify/functions/login";
   const TOKEN_KEY = "carniceria_admin_token";
- 
+
   let products = [];
- 
+
   const loginScreen = document.getElementById("loginScreen");
   const adminScreen = document.getElementById("adminScreen");
   const loginForm = document.getElementById("loginForm");
@@ -15,19 +15,19 @@
   const productListEl = document.getElementById("productList");
   const addForm = document.getElementById("addForm");
   const categoryList = document.getElementById("categoryList");
- 
+
   function getToken() {
     return localStorage.getItem(TOKEN_KEY);
   }
- 
+
   function setToken(t) {
     localStorage.setItem(TOKEN_KEY, t);
   }
- 
+
   function clearToken() {
     localStorage.removeItem(TOKEN_KEY);
   }
- 
+
   function slugify(str) {
     return (
       str
@@ -38,13 +38,13 @@
         .replace(/(^-|-$)/g, "") + "-" + Math.random().toString(36).slice(2, 6)
     );
   }
- 
+
   async function fetchProducts() {
     const res = await fetch(PRODUCTS_ENDPOINT);
     const data = await res.json();
     return data.products || [];
   }
- 
+
   async function saveProduct(product) {
     const res = await fetch(PRODUCTS_ENDPOINT, {
       method: "POST",
@@ -55,7 +55,7 @@
     if (!res.ok) throw new Error("save failed");
     return res.json();
   }
- 
+
   async function deleteProduct(id) {
     const res = await fetch(PRODUCTS_ENDPOINT, {
       method: "POST",
@@ -66,11 +66,11 @@
     if (!res.ok) throw new Error("delete failed");
     return res.json();
   }
- 
+
   function renderList() {
     const categories = [...new Set(products.map((p) => p.category))];
     categoryList.innerHTML = categories.map((c) => `<option value="${c}">`).join("");
- 
+
     productListEl.innerHTML = products
       .map(
         (p) => `
@@ -97,7 +97,7 @@
       `
       )
       .join("");
- 
+
     productListEl.querySelectorAll(".admin-product-row").forEach((row) => {
       const id = row.dataset.id;
       row.querySelector(".row-save").addEventListener("click", async () => {
@@ -121,7 +121,7 @@
           handleAuthError(e);
         }
       });
- 
+
       row.querySelector(".row-delete").addEventListener("click", async () => {
         if (!confirm("¿Borrar este corte del catálogo?")) return;
         try {
@@ -134,11 +134,11 @@
       });
     });
   }
- 
+
   function escapeAttr(str) {
     return String(str).replace(/"/g, "&quot;");
   }
- 
+
   function handleAuthError(e) {
     if (e.message === "unauthorized") {
       alert("Tu sesión expiró. Ingresá de nuevo.");
@@ -148,7 +148,7 @@
       alert("Ocurrió un error guardando los cambios. Probá de nuevo.");
     }
   }
- 
+
   addForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("newName").value.trim();
@@ -157,11 +157,11 @@
     const unit = document.getElementById("newUnit").value;
     const image = document.getElementById("newImage").value.trim();
     const offer = document.getElementById("newOffer").checked;
- 
+
     if (!name || !category) return;
- 
+
     const product = { id: slugify(name), name, category, price, unit, image, offer, active: true };
- 
+
     try {
       await saveProduct(product);
       products.push(product);
@@ -171,31 +171,31 @@
       handleAuthError(e);
     }
   });
- 
+
   async function attemptLogin() {
     loginError.hidden = true;
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
- 
+
     if (!username || !password) {
       loginError.textContent = "Completá usuario y clave.";
       loginError.hidden = false;
       return;
     }
- 
+
     try {
       const res = await fetch(LOGIN_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
- 
+
       if (!res.ok) {
         loginError.textContent = "Usuario o clave incorrectos.";
         loginError.hidden = false;
         return;
       }
- 
+
       const data = await res.json();
       setToken(data.token);
       await showAdmin();
@@ -205,38 +205,38 @@
       console.error("Error de login:", err);
     }
   }
- 
+
   document.getElementById("loginBtn").addEventListener("click", attemptLogin);
- 
+
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     attemptLogin();
   });
- 
+
   document.getElementById("password").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       attemptLogin();
     }
   });
- 
+
   logoutBtn.addEventListener("click", () => {
     clearToken();
     showLogin();
   });
- 
+
   function showLogin() {
     loginScreen.hidden = false;
     adminScreen.hidden = true;
   }
- 
+
   async function showAdmin() {
     loginScreen.hidden = true;
     adminScreen.hidden = false;
     products = await fetchProducts();
     renderList();
   }
- 
+
   (function init() {
     if (getToken()) {
       showAdmin();
