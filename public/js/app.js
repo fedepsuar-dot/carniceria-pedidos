@@ -39,7 +39,7 @@
   }
  
   function stepFor(unit) {
-    return unit === "kg" ? 0.5 : 1;
+    return unit === "kg" ? 0.1 : 1;
   }
  
   function formatQty(qty, unit) {
@@ -114,7 +114,7 @@
           <div class="qty-row">
             <div class="stepper">
               <button type="button" class="qty-minus" aria-label="Restar">−</button>
-              <span class="qty-value">${currentQty > 0 ? formatQty(currentQty, p.unit) : (p.unit === "kg" ? "0,5 kg" : "1")}</span>
+              <span class="qty-value">${currentQty > 0 ? formatQty(currentQty, p.unit) : (p.unit === "kg" ? "0,1 kg" : "1")}</span>
               <button type="button" class="qty-plus" aria-label="Sumar">+</button>
             </div>
             <button type="button" class="add-btn">${currentQty > 0 ? "En el pedido" : "Agregar"}</button>
@@ -269,6 +269,10 @@
       loadingMsg.textContent = "No pudimos cargar el catálogo. Recargá la página en un momento.";
     }
   }
+ 
+  init();
+})();
+ 
  
   init();
 })();
