@@ -99,6 +99,12 @@
   function renderCard(p) {
     const step = stepFor(p.unit);
     const currentQty = cart[p.id] ? cart[p.id].qty : 0;
+    const bigButtons = p.unit === "kg"
+      ? `<button type="button" class="qty-minus-big step-big" aria-label="Restar 1 kg">-1kg</button>`
+      : "";
+    const bigButtonsPlus = p.unit === "kg"
+      ? `<button type="button" class="qty-plus-big step-big" aria-label="Sumar 1 kg">+1kg</button>`
+      : "";
     return `
       <article class="product-card" data-id="${p.id}">
         <div class="product-photo">
@@ -113,9 +119,11 @@
           </div>
           <div class="qty-row">
             <div class="stepper">
+              ${bigButtons}
               <button type="button" class="qty-minus" aria-label="Restar">−</button>
               <span class="qty-value">${currentQty > 0 ? formatQty(currentQty, p.unit) : (p.unit === "kg" ? "0,1 kg" : "1")}</span>
               <button type="button" class="qty-plus" aria-label="Sumar">+</button>
+              ${bigButtonsPlus}
             </div>
             <button type="button" class="add-btn">${currentQty > 0 ? "En el pedido" : "Agregar"}</button>
           </div>
@@ -128,6 +136,7 @@
     const card = document.querySelector(`.product-card[data-id="${p.id}"]`);
     if (!card) return;
     const step = stepFor(p.unit);
+    const bigStep = 1;
     const qtyValueEl = card.querySelector(".qty-value");
     const addBtn = card.querySelector(".add-btn");
     let pendingQty = cart[p.id] ? cart[p.id].qty : step;
@@ -136,17 +145,19 @@
       qtyValueEl.textContent = formatQty(pendingQty, p.unit).replace(",", ",");
     }
  
-    card.querySelector(".qty-minus").addEventListener("click", () => {
-      pendingQty = Math.max(step, +(pendingQty - step).toFixed(2));
+    function applyDelta(delta) {
+      pendingQty = Math.max(step, +(pendingQty + delta).toFixed(2));
       refreshLabel();
       if (cart[p.id]) updateCartQty(p, pendingQty);
-    });
+    }
  
-    card.querySelector(".qty-plus").addEventListener("click", () => {
-      pendingQty = +(pendingQty + step).toFixed(2);
-      refreshLabel();
-      if (cart[p.id]) updateCartQty(p, pendingQty);
-    });
+    card.querySelector(".qty-minus").addEventListener("click", () => applyDelta(-step));
+    card.querySelector(".qty-plus").addEventListener("click", () => applyDelta(step));
+ 
+    const minusBig = card.querySelector(".qty-minus-big");
+    const plusBig = card.querySelector(".qty-plus-big");
+    if (minusBig) minusBig.addEventListener("click", () => applyDelta(-bigStep));
+    if (plusBig) plusBig.addEventListener("click", () => applyDelta(bigStep));
  
     addBtn.addEventListener("click", () => {
       cart[p.id] = { id: p.id, name: p.name, unit: p.unit, price: p.price, qty: pendingQty };
