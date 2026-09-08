@@ -49,8 +49,28 @@
   <div class="cart-footer">
     <label for="customerName">Tu nombre</label>
     <input id="customerName" type="text" placeholder="¿A nombre de quién anotamos el pedido?">
-    <label for="customerAddress">Dirección (solo si es delivery)</label>
-    <input id="customerAddress" type="text" placeholder="Calle, número, piso/depto, referencia...">
+ 
+    <label class="fulfillment-label">¿Cómo lo recibís?</label>
+    <div class="fulfillment-row">
+      <label class="radio-option">
+        <input type="radio" name="fulfillment" id="fulfillmentPickup" value="retiro" checked>
+        Retiro en el local
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="fulfillment" id="fulfillmentDelivery" value="delivery">
+        Delivery
+      </label>
+    </div>
+ 
+    <div id="pickupInfo" class="fulfillment-info">
+      <p>Horario de retiro:<br>Lunes a viernes de 10 a 20hs · Sábados de 10 a 14hs.</p>
+    </div>
+ 
+    <div id="deliveryInfo" class="fulfillment-info" hidden>
+      <label for="customerAddress">Dirección de entrega</label>
+      <input id="customerAddress" type="text" placeholder="Calle, número, piso/depto, referencia...">
+    </div>
+ 
     <button id="sendOrderBtn" class="whatsapp-btn" disabled>
       Enviar pedido por WhatsApp
     </button>
