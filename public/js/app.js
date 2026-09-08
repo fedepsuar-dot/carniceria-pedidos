@@ -20,6 +20,21 @@
   const sendOrderBtn = document.getElementById("sendOrderBtn");
   const customerNameInput = document.getElementById("customerName");
   const customerAddressInput = document.getElementById("customerAddress");
+  const fulfillmentPickup = document.getElementById("fulfillmentPickup");
+  const fulfillmentDelivery = document.getElementById("fulfillmentDelivery");
+  const pickupInfo = document.getElementById("pickupInfo");
+  const deliveryInfo = document.getElementById("deliveryInfo");
+ 
+  const PICKUP_HOURS = "Lunes a viernes de 10 a 20hs · Sábados de 10 a 14hs.";
+ 
+  function toggleFulfillmentUI() {
+    const isDelivery = fulfillmentDelivery.checked;
+    pickupInfo.hidden = isDelivery;
+    deliveryInfo.hidden = !isDelivery;
+  }
+ 
+  fulfillmentPickup.addEventListener("change", toggleFulfillmentUI);
+  fulfillmentDelivery.addEventListener("change", toggleFulfillmentUI);
  
   function loadCart() {
     try {
@@ -97,14 +112,8 @@
   }
  
   function renderCard(p) {
-    const step = stepFor(p.unit);
     const currentQty = cart[p.id] ? cart[p.id].qty : 0;
-    const bigButtons = p.unit === "kg"
-      ? `<button type="button" class="qty-minus-big step-big" aria-label="Restar 1 kg">-1kg</button>`
-      : "";
-    const bigButtonsPlus = p.unit === "kg"
-      ? `<button type="button" class="qty-plus-big step-big" aria-label="Sumar 1 kg">+1kg</button>`
-      : "";
+    const displayQty = currentQty > 0 ? currentQty : stepFor(p.unit);
     return `
       <article class="product-card" data-id="${p.id}">
         <div class="product-photo">
@@ -119,11 +128,13 @@
           </div>
           <div class="qty-row">
             <div class="stepper">
-              ${bigButtons}
               <button type="button" class="qty-minus" aria-label="Restar">−</button>
-              <span class="qty-value">${currentQty > 0 ? formatQty(currentQty, p.unit) : (p.unit === "kg" ? "0,1 kg" : "1")}</span>
+              <button type="button" class="qty-value" aria-label="Tocar para escribir la cantidad exacta">${formatQty(displayQty, p.unit)}</button>
+              <span class="qty-edit-wrap" hidden>
+                <input type="number" inputmode="decimal" class="qty-input" step="${stepFor(p.unit)}" min="${stepFor(p.unit)}">
+                <span class="qty-unit-label">${p.unit === "kg" ? "kg" : "u."}</span>
+              </span>
               <button type="button" class="qty-plus" aria-label="Sumar">+</button>
-              ${bigButtonsPlus}
             </div>
             <button type="button" class="add-btn">${currentQty > 0 ? "En el pedido" : "Agregar"}</button>
           </div>
@@ -136,13 +147,15 @@
     const card = document.querySelector(`.product-card[data-id="${p.id}"]`);
     if (!card) return;
     const step = stepFor(p.unit);
-    const bigStep = 1;
-    const qtyValueEl = card.querySelector(".qty-value");
+    const decimals = p.unit === "kg" ? 1 : 0;
+    const qtyValueBtn = card.querySelector(".qty-value");
+    const editWrap = card.querySelector(".qty-edit-wrap");
+    const qtyInput = card.querySelector(".qty-input");
     const addBtn = card.querySelector(".add-btn");
     let pendingQty = cart[p.id] ? cart[p.id].qty : step;
  
     function refreshLabel() {
-      qtyValueEl.textContent = formatQty(pendingQty, p.unit).replace(",", ",");
+      qtyValueBtn.textContent = formatQty(pendingQty, p.unit);
     }
  
     function applyDelta(delta) {
@@ -151,13 +164,36 @@
       if (cart[p.id]) updateCartQty(p, pendingQty);
     }
  
+    function enterEditMode() {
+      qtyInput.value = pendingQty.toFixed(decimals);
+      qtyValueBtn.hidden = true;
+      editWrap.hidden = false;
+      qtyInput.focus();
+      qtyInput.select();
+    }
+ 
+    function exitEditMode() {
+      let val = parseFloat(qtyInput.value.replace(",", "."));
+      if (isNaN(val) || val < step) val = step;
+      val = Math.round(val / step) * step;
+      pendingQty = +val.toFixed(2);
+      refreshLabel();
+      if (cart[p.id]) updateCartQty(p, pendingQty);
+      editWrap.hidden = true;
+      qtyValueBtn.hidden = false;
+    }
+ 
     card.querySelector(".qty-minus").addEventListener("click", () => applyDelta(-step));
     card.querySelector(".qty-plus").addEventListener("click", () => applyDelta(step));
  
-    const minusBig = card.querySelector(".qty-minus-big");
-    const plusBig = card.querySelector(".qty-plus-big");
-    if (minusBig) minusBig.addEventListener("click", () => applyDelta(-bigStep));
-    if (plusBig) plusBig.addEventListener("click", () => applyDelta(bigStep));
+    qtyValueBtn.addEventListener("click", enterEditMode);
+    qtyInput.addEventListener("blur", exitEditMode);
+    qtyInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        qtyInput.blur();
+      }
+    });
  
     addBtn.addEventListener("click", () => {
       cart[p.id] = { id: p.id, name: p.name, unit: p.unit, price: p.price, qty: pendingQty };
@@ -230,6 +266,7 @@
   function buildWhatsappMessage() {
     const items = Object.values(cart);
     const name = customerNameInput.value.trim();
+    const isDelivery = fulfillmentDelivery.checked;
     const address = customerAddressInput.value.trim();
     let lines = [];
     lines.push("¡Hola! Quiero hacer este pedido" + (name ? ` a nombre de ${name}` : "") + ":");
@@ -239,12 +276,18 @@
     });
     lines.push("");
     lines.push(`Total estimado: ${formatPrice(cartTotal())}`);
-    if (address) {
-      lines.push("");
-      lines.push(`Dirección de entrega: ${address}`);
+    lines.push("");
+    if (isDelivery) {
+      lines.push("Modalidad: Delivery");
+      if (address) lines.push(`Dirección de entrega: ${address}`);
+    } else {
+      lines.push("Modalidad: Retiro en el local");
+      lines.push(`Horario: ${PICKUP_HOURS}`);
     }
     lines.push("");
     lines.push("Quedo atento/a a la confirmación del total y la hora de retiro. ¡Gracias!");
+    lines.push("");
+    lines.push("Los productos no incluyen IVA, si requiere factura A, avisar antes de realizar el pago.");
     return lines.join("\n");
   }
  
