@@ -129,11 +129,10 @@
           <div class="qty-row">
             <div class="stepper">
               <button type="button" class="qty-minus" aria-label="Restar">−</button>
-              <button type="button" class="qty-value" aria-label="Tocar para escribir la cantidad exacta">${formatQty(displayQty, p.unit)}</button>
-              <span class="qty-edit-wrap" hidden>
-                <input type="number" inputmode="decimal" class="qty-input" step="${stepFor(p.unit)}" min="${stepFor(p.unit)}">
+              <div class="qty-input-wrap">
+                <input type="text" inputmode="decimal" class="qty-input" value="${formatNumberForInput(displayQty, p.unit)}" aria-label="Cantidad">
                 <span class="qty-unit-label">${p.unit === "kg" ? "kg" : "u."}</span>
-              </span>
+              </div>
               <button type="button" class="qty-plus" aria-label="Sumar">+</button>
             </div>
             <button type="button" class="add-btn">${currentQty > 0 ? "En el pedido" : "Agregar"}</button>
@@ -143,51 +142,49 @@
     `;
   }
  
+  function formatNumberForInput(qty, unit) {
+    if (unit === "kg") return qty.toFixed(1).replace(".", ",");
+    return String(Math.round(qty));
+  }
+ 
   function bindCardEvents(p) {
     const card = document.querySelector(`.product-card[data-id="${p.id}"]`);
     if (!card) return;
     const step = stepFor(p.unit);
-    const decimals = p.unit === "kg" ? 1 : 0;
-    const qtyValueBtn = card.querySelector(".qty-value");
-    const editWrap = card.querySelector(".qty-edit-wrap");
     const qtyInput = card.querySelector(".qty-input");
     const addBtn = card.querySelector(".add-btn");
     let pendingQty = cart[p.id] ? cart[p.id].qty : step;
  
-    function refreshLabel() {
-      qtyValueBtn.textContent = formatQty(pendingQty, p.unit);
+    function refreshInput() {
+      qtyInput.value = formatNumberForInput(pendingQty, p.unit);
+    }
+ 
+    function commitValue() {
+      let raw = qtyInput.value.replace(",", ".").replace(/[^0-9.]/g, "");
+      let val = parseFloat(raw);
+      if (isNaN(val) || val < step) val = step;
+      val = Math.round(val / step) * step;
+      pendingQty = +val.toFixed(2);
+      refreshInput();
+      if (cart[p.id]) updateCartQty(p, pendingQty);
     }
  
     function applyDelta(delta) {
       pendingQty = Math.max(step, +(pendingQty + delta).toFixed(2));
-      refreshLabel();
+      refreshInput();
       if (cart[p.id]) updateCartQty(p, pendingQty);
     }
  
-    function enterEditMode() {
-      qtyInput.value = pendingQty.toFixed(decimals);
-      qtyValueBtn.hidden = true;
-      editWrap.hidden = false;
-      qtyInput.focus();
-      qtyInput.select();
-    }
+    // Filtra caracteres mientras escribe: solo dígitos y una coma (para kg)
+    qtyInput.addEventListener("input", () => {
+      let v = qtyInput.value.replace(/[^0-9,]/g, "");
+      const parts = v.split(",");
+      if (parts.length > 2) v = parts[0] + "," + parts.slice(1).join("");
+      if (p.unit !== "kg") v = v.replace(/,/g, "");
+      qtyInput.value = v;
+    });
  
-    function exitEditMode() {
-      let val = parseFloat(qtyInput.value.replace(",", "."));
-      if (isNaN(val) || val < step) val = step;
-      val = Math.round(val / step) * step;
-      pendingQty = +val.toFixed(2);
-      refreshLabel();
-      if (cart[p.id]) updateCartQty(p, pendingQty);
-      editWrap.hidden = true;
-      qtyValueBtn.hidden = false;
-    }
- 
-    card.querySelector(".qty-minus").addEventListener("click", () => applyDelta(-step));
-    card.querySelector(".qty-plus").addEventListener("click", () => applyDelta(step));
- 
-    qtyValueBtn.addEventListener("click", enterEditMode);
-    qtyInput.addEventListener("blur", exitEditMode);
+    qtyInput.addEventListener("blur", commitValue);
     qtyInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -195,7 +192,11 @@
       }
     });
  
+    card.querySelector(".qty-minus").addEventListener("click", () => applyDelta(-step));
+    card.querySelector(".qty-plus").addEventListener("click", () => applyDelta(step));
+ 
     addBtn.addEventListener("click", () => {
+      commitValue();
       cart[p.id] = { id: p.id, name: p.name, unit: p.unit, price: p.price, qty: pendingQty };
       saveCart();
       renderCart();
