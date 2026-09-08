@@ -285,56 +285,40 @@ a { color: inherit; }
  
 .stepper button:hover { background: var(--maroon); }
  
-.stepper .qty-value {
-  min-width: 64px;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 0.85rem;
-  background: var(--paper);
-  border: none;
-  cursor: pointer;
-  padding: 4px 2px;
-  color: var(--charcoal);
-  touch-action: manipulation;
-}
- 
-.stepper .qty-value:hover,
-.stepper .qty-value:focus {
-  background: var(--cream);
-}
- 
-.qty-edit-wrap {
+.qty-input-wrap {
   display: flex;
   align-items: center;
   gap: 3px;
   min-width: 64px;
   justify-content: center;
-  padding: 0 2px;
+  padding: 0 4px;
+  background: var(--paper);
+  height: 32px;
 }
  
-.qty-edit-wrap input {
-  width: 40px;
-  border: 1px solid var(--charcoal);
-  border-radius: 4px;
+.qty-input-wrap input {
+  width: 34px;
+  border: none;
+  background: transparent;
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 16px;
   text-align: center;
   padding: 2px 0;
-  -moz-appearance: textfield;
+  color: var(--charcoal);
 }
  
-.qty-edit-wrap input::-webkit-outer-spin-button,
-.qty-edit-wrap input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.qty-input-wrap input:focus {
+  outline: none;
+  background: var(--cream);
+  border-radius: 3px;
 }
  
-.qty-edit-wrap .qty-unit-label {
+.qty-input-wrap .qty-unit-label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   opacity: 0.7;
+  flex-shrink: 0;
 }
  
 .add-btn {
