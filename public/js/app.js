@@ -35,6 +35,11 @@
 
   const PICKUP_HOURS = "Lunes a viernes de 10 a 20hs · Sábados de 10 a 14hs.";
 
+  // Meta Pixel: manda un evento solo si el pixel cargó (si un bloqueador lo frena, no rompe nada).
+  function trackPixel(event, params) {
+    if (typeof window.fbq === "function") window.fbq("track", event, params);
+  }
+
   function toggleFulfillmentUI() {
     const isDelivery = fulfillmentDelivery.checked;
     pickupInfo.hidden = isDelivery;
@@ -313,6 +318,13 @@
       };
       saveCart();
       renderCart();
+      trackPixel("AddToCart", {
+        content_name: p.name,
+        content_ids: [String(p.id)],
+        content_type: "product",
+        value: Math.round(lineTotal(cart[p.id])),
+        currency: "ARS",
+      });
       addBtn.textContent = "En el pedido";
       addBtn.classList.add("added");
       setTimeout(() => addBtn.classList.remove("added"), 400);
@@ -370,6 +382,13 @@
       };
       saveCart();
       renderCart();
+      trackPixel("AddToCart", {
+        content_name: c.title,
+        content_ids: [String(c.id)],
+        content_type: "product",
+        value: Math.round(lineTotal(cart[c.id])),
+        currency: "ARS",
+      });
       addBtn.textContent = "En el pedido";
       addBtn.classList.add("added");
       setTimeout(() => addBtn.classList.remove("added"), 400);
@@ -641,6 +660,11 @@
     }
 
     const message = buildWhatsappMessage();
+    trackPixel("Lead", {
+      value: Math.round(finalTotal()),
+      currency: "ARS",
+      num_items: Object.keys(cart).length,
+    });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   });
