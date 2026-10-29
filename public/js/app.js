@@ -660,10 +660,14 @@
     }
 
     const message = buildWhatsappMessage();
-    trackPixel("Lead", {
+    // InitiateCheckout: la persona abrió WhatsApp con el pedido cargado.
+    // No sabemos si lo envió ni si compró. Purchase queda para ventas confirmadas.
+    trackPixel("InitiateCheckout", {
       value: Math.round(finalTotal()),
       currency: "ARS",
       num_items: Object.keys(cart).length,
+      content_ids: Object.keys(cart).map(String),
+      content_type: "product",
     });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
