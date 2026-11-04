@@ -40,6 +40,16 @@
     if (typeof window.fbq === "function") window.fbq("track", event, params);
   }
 
+  // Código de pedido web (ej. "W-K7Q2"). Va en el mensaje de WhatsApp para que el local
+  // pueda buscar "Pedido #W" y contar cuántos pedidos de la web llegaron de verdad.
+  // Sin letras ni números que se confundan (0/O, 1/I/L).
+  function generateOrderCode() {
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    let code = "";
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return "W-" + code;
+  }
+
   function toggleFulfillmentUI() {
     const isDelivery = fulfillmentDelivery.checked;
     pickupInfo.hidden = isDelivery;
@@ -570,12 +580,16 @@
     sendOrderBtn.disabled = false;
   }
 
-  function buildWhatsappMessage() {
+  function buildWhatsappMessage(orderCode) {
     const items = Object.values(cart);
     const name = customerNameInput.value.trim();
     const isDelivery = fulfillmentDelivery.checked;
     const address = customerAddressInput.value.trim();
     let lines = [];
+    if (orderCode) {
+      lines.push(`Pedido #${orderCode}`);
+      lines.push("");
+    }
     lines.push("¡Hola! Quiero hacer este pedido" + (name ? ` a nombre de ${name}` : "") + ":");
     lines.push("");
     items.forEach((item) => {
@@ -659,7 +673,8 @@
       sendOrderBtn.textContent = "Enviar pedido por WhatsApp";
     }
 
-    const message = buildWhatsappMessage();
+    const orderCode = generateOrderCode();
+    const message = buildWhatsappMessage(orderCode);
     // InitiateCheckout: la persona abrió WhatsApp con el pedido cargado.
     // No sabemos si lo envió ni si compró. Purchase queda para ventas confirmadas.
     trackPixel("InitiateCheckout", {
@@ -668,6 +683,7 @@
       num_items: Object.keys(cart).length,
       content_ids: Object.keys(cart).map(String),
       content_type: "product",
+      order_id: orderCode,
     });
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
