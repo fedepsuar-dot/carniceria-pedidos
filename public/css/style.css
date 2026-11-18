@@ -718,7 +718,7 @@ a { color: inherit; }
 }
 
 @media (max-width: 640px) {
-  .brand-text h1 { font-size: 1.6rem; }
+  .brand-text h1 { font-size: 1.45rem; }
   .cart-btn-label { display: none; }
   .cart-btn { padding: 10px 12px; }
   .social-btn { width: 34px; height: 34px; }
